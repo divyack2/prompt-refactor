@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  basePath: '/prompt-refactor',
   assetPrefix: '/prompt-refactor',
-  trailingSlash: true,
   images: {
     unoptimized: true,
   },
@@ -12,6 +12,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-};
+}
 
 export default nextConfig;
