@@ -25,7 +25,8 @@ export default function PromptRefactorTool() {
 
   // Recipe tab state
   const [recipeTopic, setRecipeTopic] = useState("")
-  const [skillLevel, setSkillLevel] = useState("beginner")
+  const [knownSteps, setKnownSteps] = useState("")
+  const [numAlt, setNumAlt] = useState("1")
   const [detailLevel, setDetailLevel] = useState("medium")
   const [recipeFormat, setRecipeFormat] = useState("step-by-step")
 
@@ -66,7 +67,7 @@ export default function PromptRefactorTool() {
     try {
       let promptText = ""
       let resultSetter = null
-
+      // TODO: CHANGE/REMOVE THESE ALL
       switch (activeTab) {
         case "templating":
           promptText = `
@@ -86,7 +87,6 @@ export default function PromptRefactorTool() {
             I need you to refactor and improve this how-to/recipe prompt to get better AI responses:
             
             Topic/task: ${recipeTopic}
-            Skill level: ${skillLevel}
             Level of detail: ${detailLevel}
             Format preference: ${recipeFormat}
             
@@ -237,29 +237,38 @@ export default function PromptRefactorTool() {
           {/* Recipe/How-to Tab */}
           <TabsContent value="recipe" className="p-6 space-y-6 mt-0">
             <div className="space-y-2">
-              <Label htmlFor="recipeTopic">Topic/Task</Label>
+              <Label htmlFor="recipeTopic">Goal</Label>
               <Textarea
                 id="recipeTopic"
                 value={recipeTopic}
                 onChange={(e) => setRecipeTopic(e.target.value)}
                 className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                placeholder="Ex: How do I change a flat tire?"
+                placeholder="I am trying to...[ex. bake a cake]."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="knownSteps">Known Steps</Label>
+              <Textarea
+                id="knownSteps"
+                value={knownSteps}
+                onChange={(e) => setKnownSteps(e.target.value)}
+                className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
+                placeholder="Ex: I need to get flour, sugar, and eggs."
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="skillLevel">Skill Level</Label>
-                <Select value={skillLevel} onValueChange={setSkillLevel}>
-                  <SelectTrigger className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0">
-                    <SelectValue placeholder="Select skill level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="beginner">Beginner</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="expert">Expert</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="numAlt">Number of Alternate Methods</Label>
+                <Input
+                  id="numAlt"
+                  type="number"
+                  value={numAlt}
+                  onChange={(e) => setNumAlt(e.target.value)}
+                  className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
+                  placeholder="Ex: 10"
+                />
               </div>
 
               <div className="space-y-2">
@@ -269,25 +278,12 @@ export default function PromptRefactorTool() {
                     <SelectValue placeholder="Select detail level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="brief">Brief</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="detailed">Detailed</SelectItem>
+                    <SelectItem value="brief">High-level summary</SelectItem>
+                    <SelectItem value="medium">Moderate detail </SelectItem>
+                    <SelectItem value="detailed">Detailed instructions</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="recipeFormat">Format Preference</Label>
-              <Select value={recipeFormat} onValueChange={setRecipeFormat}>
-                <SelectTrigger className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0">
-                  <SelectValue placeholder="Select format" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="step-by-step">Step-by-Step</SelectItem>
-                  <SelectItem value="narrative">Narrative</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="flex justify-end mt-6">
