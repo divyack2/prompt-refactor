@@ -31,10 +31,10 @@ export default function PromptRefactorTool() {
   const [recipeFormat, setRecipeFormat] = useState("step-by-step")
 
   // Text generation tab state
-  const [sourceText, setSourceText] = useState("")
-  const [wordCount, setWordCount] = useState("100")
-  const [textStyle, setTextStyle] = useState("")
-  const [textPurpose, setTextPurpose] = useState("summary")
+  const [personaGoal, setPersonaGoal] = useState("")
+  const [persona, setPersona] = useState("")
+  const [personaTopics, setPersonaTopics] = useState("")
+  const [personaDetails, setPersonaDetails] = useState("")
 
   // Fact question tab state
   const [factQuestion, setFactQuestion] = useState("")
@@ -98,11 +98,6 @@ export default function PromptRefactorTool() {
           promptText = `
             I need you to refactor and improve this text generation prompt to get better AI responses:
             
-            Source text or topic: ${sourceText}
-            Word/character count: ${wordCount}
-            Style/tone: ${textStyle}
-            Purpose: ${textPurpose}
-            
             Please rewrite my prompt to be more effective, clear, and likely to produce the desired text output.
           `
           resultSetter = setTextResult
@@ -165,7 +160,7 @@ export default function PromptRefactorTool() {
                 value="text"
                 className="flex-1 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:shadow-none rounded-none"
               >
-                Text Generation
+                Persona/Role-based
               </TabsTrigger>
               <TabsTrigger
                 value="fact"
@@ -214,7 +209,7 @@ export default function PromptRefactorTool() {
             <div className="flex justify-end mt-6">
               <Button
                 onClick={handleRefactorPrompt}
-                disabled={!templateStructure || isLoading}
+                disabled={!templateStructure || !templateConstraints || !templateDesc || isLoading}
                 className="bg-black hover:bg-gray-800 text-white"
               >
                 {isLoading ? (
@@ -285,7 +280,7 @@ export default function PromptRefactorTool() {
             <div className="flex justify-end mt-6">
               <Button
                 onClick={handleRefactorPrompt}
-                disabled={!recipeTopic || isLoading}
+                disabled={!recipeTopic || !knownSteps || !numAlt || !detailLevel || isLoading}
                 className="bg-black hover:bg-gray-800 text-white"
               >
                 {isLoading ? (
@@ -301,68 +296,56 @@ export default function PromptRefactorTool() {
 
           </TabsContent>
 
-          {/* Text Generation Tab */}
+          {/* Persona/Role-based Tab */}
           <TabsContent value="text" className="p-6 space-y-6 mt-0">
             <div className="space-y-2">
-              <Label htmlFor="sourceText">Task</Label>
+              <Label htmlFor="personaGoal">Goal/Question</Label>
               <Textarea
-                id="sourceText"
-                value={sourceText}
-                onChange={(e) => setSourceText(e.target.value)}
+                id="personaGoal"
+                value={personaGoal}
+                onChange={(e) => setPersonaGoal(e.target.value)}
                 className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                placeholder="Ex: Summarize this book in 100 words"
+                placeholder="Ex: I want to learn more about the Revolutionary War."
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="wordCount">Word Count</Label>
-                <Input
-                  id="wordCount"
-                  type="number"
-                  value={wordCount}
-                  onChange={(e) => setWordCount(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                  placeholder="Ex: 100"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="textPurpose">Purpose</Label>
-                <Select value={textPurpose} onValueChange={setTextPurpose}>
-                  <SelectTrigger className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0">
-                    <SelectValue placeholder="Select purpose" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="summary">Summary</SelectItem>
-                    <SelectItem value="expansion">Expansion</SelectItem>
-                    <SelectItem value="rewrite">Rewrite</SelectItem>
-                    <SelectItem value="analysis">Analysis</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="persona">What persona or role should the model assume? </Label>
+              <Textarea
+                id="persona"
+                value={persona}
+                onChange={(e) => setPersona(e.target.value)}
+                className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
+                placeholder="Clearly specify the persona, e.g., job title, historical figure, fictional character, or non-human entity."
+              />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="textStyle">Style/Tone</Label>
-              <Select value={textStyle} onValueChange={setTextStyle}>
-                <SelectTrigger className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0">
-                  <SelectValue placeholder="Select style/tone" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="formal">Formal</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="academic">Academic</SelectItem>
-                  <SelectItem value="creative">Creative</SelectItem>
-                  <SelectItem value="technical">Technical</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="personaTopics">What general topics would you like this persona to focus on? </Label>
+              <Textarea
+                id="personaTopics"
+                value={personaTopics}
+                onChange={(e) => setPersonaTopics(e.target.value)}
+                className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
+                placeholder="Ex: security reviews, code suggestions, instructions"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="personaDetails">What details or aspects should the persona particularly emphasize in its responses? </Label>
+              <Textarea
+                id="personaDetails"
+                value={personaDetails}
+                onChange={(e) => setPersonaDetails(e.target.value)}
+                className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
+                placeholder="Clearly specify important areas of focus relevant to the persona, e.g., security vulnerabilities, educational insights, historical accuracy, humor, etc."
+              />
             </div>
 
             <div className="flex justify-end mt-6">
               <Button
                 onClick={handleRefactorPrompt}
-                disabled={!sourceText || isLoading}
+                disabled={!personaGoal || !persona || !personaTopics || !personaDetails || isLoading}
                 className="bg-black hover:bg-gray-800 text-white"
               >
                 {isLoading ? (
