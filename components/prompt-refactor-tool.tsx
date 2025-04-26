@@ -20,8 +20,8 @@ export default function PromptRefactorTool() {
 
   // Templating tab state
   const [templateStructure, setTemplateStructure] = useState("")
-  const [itemCount, setItemCount] = useState("10")
   const [templateConstraints, setTemplateConstraints] = useState("")
+  const [templateDesc, setTemplateDesc] = useState("")
 
   // Recipe tab state
   const [recipeTopic, setRecipeTopic] = useState("")
@@ -74,7 +74,6 @@ export default function PromptRefactorTool() {
             I need you to refactor and improve this templating prompt to get better AI responses:
             
             Original prompt: ${templateStructure}
-            Number of items: ${itemCount}
             Additional constraints: ${templateConstraints}
             
             Please rewrite my prompt to be more effective, clear, and likely to produce the desired structured data.
@@ -180,41 +179,38 @@ export default function PromptRefactorTool() {
           {/* Templating Tab */}
           <TabsContent value="templating" className="p-6 space-y-6 mt-0">
             <div className="space-y-2">
-              <Label htmlFor="templateStructure">Template Structure</Label>
+              <Label htmlFor="templateStructure">Goal/Question</Label>
               <Textarea
                 id="templateStructure"
                 value={templateStructure}
                 onChange={(e) => setTemplateStructure(e.target.value)}
                 className="min-h-24 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                placeholder="Ex: Give me a list of names, date of birth, star signs, and favorite color of people"
+                placeholder="Ex: Generate a name and job title for a person."
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="itemCount">Number of Items</Label>
-                <Input
-                  id="itemCount"
-                  type="number"
-                  value={itemCount}
-                  onChange={(e) => setItemCount(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                  placeholder="Ex: 10"
-                />
-              </div>
-            </div>
-
             <div className="space-y-2">
-              <Label htmlFor="templateConstraints">Additional Constraints</Label>
+              <Label htmlFor="templateConstraints">Please provide the exact template you want the output to follow.</Label>
               <Textarea
                 id="templateConstraints"
                 value={templateConstraints}
                 onChange={(e) => setTemplateConstraints(e.target.value)}
                 className="min-h-20 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                placeholder="Ex: Names should be from different cultures, birth dates between 1980-2000"
+                placeholder="Clearly indicate placeholders in the template, e.g., [NAME], [JOB], [DATE], etc."
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="templateDesc">For each placeholder, briefly describe what kind of content should go there.</Label>
+              <Textarea
+                id="templateDesc"
+                value={templateDesc}
+                onChange={(e) => setTemplateDesc(e.target.value)}
+                className="min-h-20 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
+                placeholder="Ex: NAME: person's full name; DATE: event date in YYYY-MM-DD format.."
+              />
+            </div>
+            
             <div className="flex justify-end mt-6">
               <Button
                 onClick={handleRefactorPrompt}
