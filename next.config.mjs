@@ -10,8 +10,8 @@ const nextConfig = {
     unoptimized: true,
   },
   output: 'export',
-  basePath: '/prompt-refactor',       // 🔁 Replace this
-  assetPrefix: '/prompt-refactor',    // 🔁 Replace this
+  basePath: '/prompt-refactor',
+  assetPrefix: '/prompt-refactor',
 }
 
 export default nextConfig
