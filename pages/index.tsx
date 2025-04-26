@@ -1,4 +1,4 @@
-import PromptRefactorTool from "@/components/prompt-refactor-tool"
+import PromptRefactorTool from "@/components/prompt-refactor-tool";
 
 export default function Home() {
   return (
@@ -6,5 +6,5 @@ export default function Home() {
       <h1 className="text-2xl font-medium mb-4 text-gray-900">Prompt Refactoring</h1>
       <PromptRefactorTool />
     </main>
-  )
+  );
 }
