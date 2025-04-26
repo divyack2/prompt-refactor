@@ -2,6 +2,7 @@
 const nextConfig = {
   output: 'export',
   assetPrefix: '/prompt-refactor',
+  trailingSlash: true,
   images: {
     unoptimized: true,
   },
@@ -11,6 +12,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-}
+};
 
 export default nextConfig;
