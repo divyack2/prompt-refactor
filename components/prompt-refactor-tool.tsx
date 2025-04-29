@@ -117,17 +117,18 @@ export default function PromptRefactorTool() {
           break
       }
 
-      const { text } = await generateText({
-        model: openai("gpt-4o"),
-        prompt: promptText,
-        system:
-          "You are an expert at writing effective prompts for AI models. Your job is to refactor and improve user prompts to get better results. Focus on clarity, specificity, and structure.",
-      })
+      //const { text } = await generateText({
+      //  model: openai("gpt-4o"),
+      //  prompt: promptText,
+      //  system:
+      //    "You are an expert at writing effective prompts for AI models. Your job is to refactor and improve user prompts to get better results. Focus on clarity, specificity, and structure.",
+      //})
 
-      resultSetter(text)
+      //resultSetter(text)
     } catch (error) {
       console.error("Error refactoring prompt:", error)
     } finally {
+      saveRefactorPrompt()
       setIsLoading(false)
     }
   }
@@ -138,6 +139,50 @@ export default function PromptRefactorTool() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const saveRefactorPrompt = async () => {
+    try {
+      const formData = {
+        tab: activeTab, 
+        ...(activeTab === "templating" && {
+          templateStructure,
+          templateConstraints,
+          templateDesc,
+        }),
+        ...(activeTab === "recipe" && {
+          recipeTopic,
+          knownSteps,
+          numAlt,
+          detailLevel,
+          recipeFormat,
+        }),
+        ...(activeTab === "text" && {
+          personaGoal,
+          persona,
+          personaTopics,
+          personaDetails,
+        }),
+        ...(activeTab === "fact" && {
+          factQuestion,
+          factDetailLevel,
+          factFormat,
+        }),
+      };
+      
+      // Send the form data to the backend
+      const response = await fetch("http://localhost:4000/api/refactor-prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+  
+      console.log("Form data sent successfully!");
+    } catch (error) {
+      console.error("Error sending form data:", error);
+    } 
+  };
   return (
     <Card className="w-full max-w-3xl bg-white shadow-sm border-0">
       <CardContent className="p-0">
