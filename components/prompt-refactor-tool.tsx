@@ -66,55 +66,44 @@ export default function PromptRefactorTool() {
     setIsLoading(true)
     try {
       let promptText = ""
-      let resultSetter = null
-      // TODO: CHANGE/REMOVE THESE ALL
+      let resultSetter = setTemplateResult
       switch (activeTab) {
         case "templating":
-          promptText = `
-            I need you to refactor and improve this templating prompt to get better AI responses:
-            
-            Original prompt: ${templateStructure}
-            Additional constraints: ${templateConstraints}
-            
-            Please rewrite my prompt to be more effective, clear, and likely to produce the desired structured data.
+          promptText = `I am going to provide a template for your output. Everything in all caps or enclosed within brackets [ ] is a placeholder. Whenever you generate text, fit it into the placeholders I have provided. 
+          
+Strictly follow the formatting and overall template provided here: 
+    ${templateConstraints}. 
+          
+Each placeholder should be filled according to the following guidelines:
+    ${templateDesc}
+          
+This is the goal/question: ${templateStructure}.
           `
           resultSetter = setTemplateResult
           break
 
         case "recipe":
-          promptText = `
-            I need you to refactor and improve this how-to/recipe prompt to get better AI responses:
-            
-            Topic/task: ${recipeTopic}
-            Level of detail: ${detailLevel}
-            Format preference: ${recipeFormat}
-            
-            Please rewrite my prompt to be more effective, clear, and likely to produce a good how-to guide.
-          `
+          promptText = `I am trying to ${recipeTopic}. I know that I need to perform the following steps: ${knownSteps}. Provide a complete sequence of steps to accomplish my goal, structured clearly. Fill in any missing or implied steps automatically. Identify any unnecessary or redundant steps from my initial list. Include ${numAlt} alternative methods or approaches for achieving this goal. The level of detail for each step should be: ${detailLevel}.`
           resultSetter = setRecipeResult
           break
 
         case "text":
-          promptText = `
-            I need you to refactor and improve this text generation prompt to get better AI responses:
-            
-            Please rewrite my prompt to be more effective, clear, and likely to produce the desired text output.
-          `
+          promptText = `Act as a ${persona}. When generating your responses, particularly emphasize: ${personaDetails} and focus on these topics: ${personaTopics}. This is the goal/question: ${personaGoal}.`
           resultSetter = setTextResult
           break
 
-        case "fact":
-          promptText = `
-            I need you to refactor and improve this factual question prompt to get better AI responses:
+        // case "fact":
+        //   promptText = `
+        //     I need you to refactor and improve this factual question prompt to get better AI responses:
             
-            Question: ${factQuestion}
-            Preferred detail level: ${factDetailLevel}
-            Format preference: ${factFormat}
+        //     Question: ${factQuestion}
+        //     Preferred detail level: ${factDetailLevel}
+        //     Format preference: ${factFormat}
             
-            Please rewrite my prompt to be more effective, clear, and likely to produce an accurate and helpful answer.
-          `
-          resultSetter = setFactResult
-          break
+        //     Please rewrite my prompt to be more effective, clear, and likely to produce an accurate and helpful answer.
+        //   `
+        //   resultSetter = setFactResult
+        //   break
       }
 
       //const { text } = await generateText({
@@ -124,13 +113,43 @@ export default function PromptRefactorTool() {
       //    "You are an expert at writing effective prompts for AI models. Your job is to refactor and improve user prompts to get better results. Focus on clarity, specificity, and structure.",
       //})
 
-      //resultSetter(text)
+      resultSetter(promptText)
     } catch (error) {
       console.error("Error refactoring prompt:", error)
     } finally {
       saveRefactorPrompt()
       setIsLoading(false)
     }
+  }
+
+  const renderResultSection = () => {
+    const result = getActiveResult()
+
+    return (
+      <div className="mt-8 border-t pt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-gray-900">Refactored Prompt</h3>
+          <Button
+            onClick={copyToClipboard}
+            variant="outline"
+            size="sm"
+            className="text-gray-700 border-gray-200 hover:bg-gray-50"
+            disabled={!result}
+          >
+            <Copy className="mr-2 h-4 w-4" />
+            {copied ? "Copied!" : "Copy"}
+          </Button>
+        </div>
+
+        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-[150px]">
+          {result ? (
+            <pre className="whitespace-pre-wrap text-sm">{result}</pre>
+          ) : (
+            <p className="text-gray-400 text-sm">Your refactored prompt will appear here...</p>
+          )}
+        </div>
+      </div>
+    )
   }
 
   const copyToClipboard = () => {
@@ -247,7 +266,7 @@ export default function PromptRefactorTool() {
                 value={templateDesc}
                 onChange={(e) => setTemplateDesc(e.target.value)}
                 className="min-h-20 bg-gray-50 border border-gray-200 focus:border-gray-300 focus:ring-0"
-                placeholder="Ex: NAME: person's full name; DATE: event date in YYYY-MM-DD format.."
+                placeholder="Ex: [NAME]: person's full name; [DATE]: event date in YYYY-MM-DD format.."
               />
             </div>
             
@@ -268,6 +287,7 @@ export default function PromptRefactorTool() {
               </Button>
             </div>
 
+            {renderResultSection()}
           </TabsContent>
 
           {/* Recipe/How-to Tab */}
@@ -339,6 +359,7 @@ export default function PromptRefactorTool() {
               </Button>
             </div>
 
+            {renderResultSection()}
           </TabsContent>
 
           {/* Persona/Role-based Tab */}
@@ -404,6 +425,7 @@ export default function PromptRefactorTool() {
               </Button>
             </div>
 
+            {renderResultSection()}
           </TabsContent>
 
           {/* Fact/Question Tab */}
