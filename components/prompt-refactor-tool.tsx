@@ -207,12 +207,12 @@ export default function PromptRefactorTool() {
               >
                 Persona/Role-based
               </TabsTrigger>
-              <TabsTrigger
+              {/* <TabsTrigger
                 value="fact"
                 className="flex-1 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:shadow-none rounded-none"
               >
                 Fact/Question
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
           </div>
 
@@ -407,7 +407,7 @@ export default function PromptRefactorTool() {
           </TabsContent>
 
           {/* Fact/Question Tab */}
-          <TabsContent value="fact" className="p-6 space-y-6 mt-0">
+          {/* <TabsContent value="fact" className="p-6 space-y-6 mt-0">
             <div className="space-y-2">
               <Label htmlFor="factQuestion">Question</Label>
               <Textarea
@@ -466,7 +466,7 @@ export default function PromptRefactorTool() {
               </Button>
             </div>
 
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </CardContent>
     </Card>
